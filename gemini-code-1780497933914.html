@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MICE Digital Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700&family=Caveat:wght@600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        /* =========================================
+           1. GIAO DIỆN MÀN HÌNH CHỜ (LANDING PAGE)
+           ========================================= */
+        #landing-page {
+            position: fixed;
+            inset: 0;
+            /* Lấy ảnh bạn tải lên làm nền mờ */
+            background-image: url('967e88125270a5cbe2ce157d093a6407.jpg');
+            background-size: cover;
+            background-position: center;
+            background-color: #050914; /* Màu nền dự phòng */
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1s ease, transform 1s ease, visibility 1s;
+        }
+
+        /* Hiệu ứng khi bấm nút mở (Mờ dần và zoom nhẹ) */
+        #landing-page.hidden {
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(1.1);
+            pointer-events: none;
+        }
+
+        .holo-content {
+            text-align: center;
+            /* Đẩy nội dung lên một chút để vừa vặn vào khung màn hình của ảnh */
+            margin-top: -30px; 
+            /* Hiệu ứng lơ lửng */
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .neon-title {
+            font-size: 5rem;
+            color: #ffffff;
+            font-weight: 900;
+            text-transform: uppercase;
+            font-family: 'Baloo 2', sans-serif;
+            letter-spacing: 5px;
+            margin-bottom: 10px;
+            /* Hiệu ứng phát sáng Neon Xanh */
+            text-shadow: 0 0 10px #00d2ff, 0 0 20px #00d2ff, 0 0 40px #007bb5, 0 0 80px #007bb5;
+        }
+
+        .neon-sub {
+            font-size: 1.5rem;
+            color: #b3e5fc;
+            margin-bottom: 50px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(0, 210, 255, 0.5);
+        }
+
+        /* Nút bấm phong cách Cyberpunk */
+        .cyber-btn {
+            background: rgba(0, 210, 255, 0.05);
+            border: 2px solid #00d2ff;
+            color: #00d2ff;
+            padding: 15px 50px;
+            font-size: 1.3rem;
+            font-weight: 900;
+            border-radius: 4px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.4), inset 0 0 15px rgba(0, 210, 255, 0.2);
+            letter-spacing: 2px;
+            font-family: 'Baloo 2', sans-serif;
+        }
+
+        .cyber-btn:hover {
+            background: #00d2ff;
+            color: #000;
+            box-shadow: 0 0 30px #00d2ff, inset 0 0 20px #ffffff;
+            transform: translateY(-2px);
+        }
+        .cyber-btn:active { transform: translateY(2px); }
+
+        /* Khung bọc toàn bộ cửa hàng chính (Ẩn mặc định) */
+        #main-store {
+            display: none;
+            width: 100%;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #main-store.visible {
+            display: flex;
+            opacity: 1;
+        }
+
+        /* =========================================
+           2. GIAO DIỆN CỬA HÀNG BÊN TRONG (CŨ)
+           ========================================= */
+        body {
+            background-color: #F4EFE6; 
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(255,255,255,0.9) 0%, rgba(244,239,230,0) 60%),
+                url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231f3f68' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            background-attachment: fixed;
+            font-family: 'Baloo 2', sans-serif;
+            color: #333;
+            margin: 0;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: ""; position: fixed; bottom: 0; left: 0; width: 300px; height: 400px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='400' opacity='0.12'%3E%3Cpath d='M20 400 V250 L70 200 V80 M70 200 H150 L200 150 V100 M100 400 V320 L140 280 V220 M140 280 H220 L250 250 V180' fill='none' stroke='%23000' stroke-width='2'/%3E%3Crect x='66' y='76' width='8' height='8' fill='%23000'/%3E%3Crect x='196' y='96' width='8' height='8' fill='%23000'/%3E%3Crect x='246' y='176' width='8' height='8' fill='%23000'/%3E%3Cpath d='M0 340 H15 M0 355 H30 M0 370 H20 M0 385 H10' fill='none' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: bottom left; z-index: -1; pointer-events: none;
+        }
+        body::after {
+            content: ""; position: fixed; top: -150px; right: -150px; width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(226,128,29,0.15) 0%, rgba(226,128,29,0) 70%); border-radius: 50%; z-index: -1; pointer-events: none;
+        }
+
+        .header { text-align: center; margin: 30px 0 20px; }
+        .title-mice { font-size: 4.5rem; color: #1F3F68; font-weight: 900; text-transform: uppercase; text-shadow: 4px 4px 0 #fff, 6px 6px 0 #1F3F68; line-height: 1; letter-spacing: 2px;}
+        .title-sub { font-size: 1.8rem; color: #E2801D; font-weight: 700; text-transform: uppercase; margin-top: -10px; text-shadow: 1px 1px 0 #fff; letter-spacing: 1px;}
+
+        .tabs-container { display: flex; gap: 15px; margin-bottom: 40px; flex-wrap: wrap; justify-content: center; padding: 0 10px; }
+        .tab-btn { background-color: transparent; color: #1F3F68; border: 2px solid #1F3F68; padding: 10px 25px; border-radius: 30px; font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 1.2rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 4px 4px 0px rgba(31, 63, 104, 0.15); }
+        .tab-btn:hover { background-color: rgba(31, 63, 104, 0.05); transform: translateY(-2px); }
+        .tab-btn.active { background-color: #1F3F68; color: white; border-color: #1F3F68; box-shadow: 4px 4px 0px #E59F23; transform: translateY(0); }
+
+        .tab-content { display: none; width: 100%; max-width: 950px; animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1); padding-bottom: 150px; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        .grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 45px 35px; width: 100%; padding: 0 20px; }
+
+        .card { background: linear-gradient(145deg, #2a4a7f, #1F3F68); border-radius: 18px; padding: 40px 20px 20px; text-align: center; color: white; position: relative; box-shadow: 10px 10px 0px #E59F23, 15px 15px 30px rgba(31, 63, 104, 0.3); display: flex; flex-direction: column; transition: transform 0.3s ease, box-shadow 0.3s ease; border: 1px solid rgba(255,255,255,0.1); }
+        .card:hover { transform: translate(-4px, -4px); box-shadow: 14px 14px 0px #E59F23, 20px 20px 35px rgba(31, 63, 104, 0.4); }
+
+        .card-badge { position: absolute; top: -22px; left: 50%; transform: translateX(-50%); background-color: #1F3F68; color: white; border: 2.5px solid #E59F23; border-radius: 30px; padding: 6px 20px; font-weight: bold; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; white-space: nowrap; box-shadow: 0 6px 12px rgba(0,0,0,0.3); text-transform: uppercase; letter-spacing: 0.5px; }
+        .acc-type { font-weight: 700; font-size: 1.1rem; margin-bottom: 12px; color: #e0e6ed; }
+
+        .price-row { margin: 6px 0; padding: 12px 10px; display: flex; flex-direction: column; align-items: center; border-radius: 12px; background-color: rgba(255, 255, 255, 0.04); box-shadow: inset 2px 2px 4px rgba(255,255,255,0.05), 3px 3px 6px rgba(0,0,0,0.15); border: 2px solid transparent; cursor: pointer; transition: all 0.2s ease; }
+        .price-row:hover { background-color: rgba(255, 255, 255, 0.08); }
+        .price-row.active { background-color: rgba(229, 159, 35, 0.15); border: 2px solid #E59F23; transform: scale(0.97); box-shadow: inset 3px 3px 8px rgba(0,0,0,0.3), 0 0 15px rgba(229, 159, 35, 0.3); }
+
+        .duration { font-family: 'Caveat', cursive; font-size: 1.8rem; letter-spacing: 1px; line-height: 1; pointer-events: none; }
+        .price-tag { background-color: rgba(0,0,0,0.25); color: #F8B541; border: 1.5px solid #F8B541; padding: 3px 12px; border-radius: 6px; font-weight: bold; font-size: 1.2rem; margin-top: 6px; pointer-events: none; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); letter-spacing: 0.5px; }
+
+        .order-btn { margin-top: 18px; padding: 12px; background: linear-gradient(145deg, #f0ac33, #d9931b); color: #1F3F68; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 900; font-family: 'Baloo 2', sans-serif; cursor: pointer; text-transform: uppercase; box-shadow: 0 6px 0px #9e6b0f, 0 8px 15px rgba(0,0,0,0.3); transition: all 0.1s; letter-spacing: 1px; }
+        .order-btn:active { transform: translateY(4px); box-shadow: 0 2px 0px #9e6b0f, 0 4px 8px rgba(0,0,0,0.3); }
+
+        .quantity-control { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 18px; }
+        .qty-btn { width: 38px; height: 38px; border-radius: 50%; border: none; background-color: #F8B541; color: #1F3F68; font-size: 1.2rem; font-weight: 900; cursor: pointer; box-shadow: 0 4px 0px #9e6b0f; transition: transform 0.1s ease; }
+        .qty-btn:active { transform: translateY(2px); }
+        .qty-value { min-width: 40px; text-align: center; font-size: 1.1rem; font-weight: 700; color: #F8B541; }
+
+        #qr-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); display: none; align-items: center; justify-content: center; z-index: 999; padding: 20px; }
+        #qr-overlay.active { display: flex; }
+        .qr-modal { background: white; border-radius: 22px; max-width: 420px; width: 100%; padding: 28px; text-align: center; box-shadow: 0 18px 40px rgba(0,0,0,0.25); position: relative; }
+        .qr-modal h3 { font-size: 1.4rem; margin-bottom: 18px; color: #1F3F68; }
+        .qr-modal p { color: #444; line-height: 1.5; margin-bottom: 18px; }
+        .qr-modal img { width: 260px; height: 260px; border-radius: 18px; border: 2px solid #1F3F68; background: #f6f6f6; }
+        .qr-close { position: absolute; top: 14px; right: 14px; border: none; background: transparent; color: #1F3F68; font-size: 1.3rem; font-weight: 700; cursor: pointer; }
+
+        .contact-info { position: fixed; bottom: 0; right: 0; background-color: #1F3F68; color: white; padding: 20px 45px 20px 65px; border-top-left-radius: 150px; text-align: right; z-index: 10; box-shadow: -8px -8px 25px rgba(0,0,0,0.2); border-left: 2px solid rgba(255,255,255,0.1); border-top: 2px solid rgba(255,255,255,0.1); }
+        .info-badge { border: 1.5px solid #F8B541; color: #F8B541; padding: 3px 18px; border-radius: 20px; font-size: 0.95rem; font-weight: bold; display: inline-block; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;}
+        .contact-line { font-size: 1.2rem; display: flex; align-items: center; justify-content: flex-end; gap: 12px; margin-bottom: 4px; font-weight: 500;}
+        .contact-line i { color: #F8B541; font-size: 1.3rem; filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.4)); }
+
+        @media (max-width: 900px) { .grid-container { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 600px) {
+            .neon-title { font-size: 3rem; }
+            .grid-container { grid-template-columns: 1fr; }
+            .title-mice { font-size: 3.5rem; }
+            .contact-info { position: relative; border-radius: 20px; margin-top: 50px; padding: 25px; text-align: center; border: none;}
+            .contact-line { justify-content: center; }
+            .tab-btn { padding: 8px 18px; font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="landing-page">
+        <div class="holo-content">
+            <div class="neon-title">MICE DIGITAL</div>
+            <div class="neon-sub">Hệ thống phân phối tài khoản số Premium</div>
+            <button id="enter-store-btn" class="cyber-btn">KHÁM PHÁ DỊCH VỤ</button>
+        </div>
+    </div>
+
+    <div id="main-store">
+        
+        <div class="header">
+            <div class="title-mice">MICE</div>
+            <div class="title-sub">DIGITAL PREMIUM</div>
+        </div>
+
+        <div class="tabs-container">
+            <button class="tab-btn active" data-tab="giai-tri">Giải trí & Edit</button>
+            <button class="tab-btn" data-tab="hoc-tap">Học tập & AI</button>
+            <button class="tab-btn" data-tab="lam-viec">Làm việc & Lưu trữ</button>
+        </div>
+
+        <div id="giai-tri" class="tab-content active">
+            <div class="grid-container">
+                <div class="card">
+                    <div class="card-badge">YOUTUBE <i class="fa-brands fa-youtube" style="color: #FF0000;"></i></div>
+                    <div class="acc-type">Add chính chủ</div>
+                    <div class="price-row"><span class="duration">3 Tháng</span><span class="price-tag">149k</span></div>
+                    <div class="price-row"><span class="duration">6 Tháng</span><span class="price-tag">219k</span></div>
+                    <div class="price-row"><span class="duration">12 Tháng</span><span class="price-tag">359k</span></div>
+                    <button class="order-btn" style="margin-top: auto;">Đặt hàng ngay</button>
+                </div>
+                <div class="card">
+                    <div class="card-badge">SPOTIFY <i class="fa-brands fa-spotify" style="color: #1DB954;"></i></div>
+                    <div class="acc-type">Add chính chủ</div>
+                    <div class="price-row"><span class="duration">6 Tháng</span><span class="price-tag">249k</span></div>
+                    <div class="price-row"><span class="duration">12 Tháng</span><span class="price-tag">379k</span></div>
+                    <button class="order-btn" style="margin-top: auto;">Đặt hàng ngay</button>
+                </div>
+                <div class="card">
+                    <div class="card-badge">CANVA <i class="fa-brands fa-neos" style="color: #00C4CC;"></i></div>
+                    <div class="acc-type">Add chính chủ</div>
+                    <div class="price-row"><span class="duration">6 Tháng</span><span class="price-tag">59k</span></div>
+                    <div class="price-row"><span class="duration">12 Tháng</span><span class="price-tag">99k</span></div>
+                    <div class="price-row"><span class="duration">vĩnh viễn</span><span class="price-tag">299k</span></div>
+                    <button class="order-btn" style="margin-top: auto;">Đặt hàng ngay</button>
+                </div>
+                <div class="card">
+                    <div class="card-badge">NETFLIX 4K <i class="fa-solid fa-n" style="color: #E50914;"></i></div>
+                    <div class="acc-type">Add chính chủ</div>
+                    <div class="price-row"><span class="duration">3 Tháng</span><span class="price-tag">169k</span></div>
+                    <div class="price-row"><span class="duration">6 Tháng</span><span class="price-tag">259k</span></div>
+                    <div class="price-row"><span class="duration">12 Tháng</span><span class="price-tag">329k</span></div>
+                    <button class="order-btn" style="margin-top: auto;">Đặt hàng ngay</button>
+                </div>
+                <div class="card">
+                    <div class="card-badge">CAPCUT <i class="fa-solid fa-scissors" style="color: #fff;"></i></div>
+                    <div class="acc-type">Acc cấp</div>
+                    <div class="price-row"><span class="duration">6 Tháng</span><span class="price-tag">199k</span></div>
+                    <div class="price-row"><span class="duration">12 Tháng</span><span class="price-tag">359k</span></div>
+                    <div class="price-row"><span class="duration">1 năm</span><span class="acc-type" style="font-size: 0.9rem; margin-top: -5px; pointer-events: none; color: #a9b9cc;">(chính chủ)</span><span class="price-tag">800k</span></div>
+                    <button class="order-btn" style="margin-top: auto;">Đặt hàng ngay</button>
+                </div>
+                <div class="card">
+                    <div class="card-badge">LOCKET <i class="fa-solid fa-heart" style="color: #FFD700;"></i></div>
+                    <div class="acc-type" style="margin-bottom: 20px;">Add chính chủ<br>theo máy</div>
+                    <div class="price-row"><span class="duration">vĩnh viễn</span><span class="price-tag">20k</span></div>
+                    <button class="order-btn" style="margin-top: auto;">Đặt hàng ngay</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="hoc-tap" class="tab-content">
+            <div class="grid-container">
+                <div class="card">
+                    <div class="card-badge">DUOLINGO <i class="fa-solid fa-graduation-cap" style="color: #58CC02;"></i></div>
+                    <div class="acc-type">Add Fam 2TB</div>
+                    <div class="price-row"><span class="duration">3 Tháng</span><span class="price-tag">119k</span></div>
+                    <div class="price-row"><span class="duration">6 Tháng</span><span class="price-tag">175k</span></div>
+                    <div class="price-row"><span class="duration">12 Tháng</span><span class="price-tag">229k</span></div>
+                    <button class="order-btn" style="margin-top: auto;">Đặt hàng ngay</button>
+                </div>
+                <div class="card">
+                    <div class="card-badge">ELSA <i class="fa-regular fa-star" style="color: #2F92D0;"></i></div>
+                    <div class="acc-type">Acc cấp</div>
+                    <div class="price-row"><span class="duration">6 Tháng</span><span class="price-tag">799k</span></div>
+                    <div class="price-row"><span class="duration">12 Tháng</span><span class="price-tag">1.499k</span></div>
+                    <button class="order-btn" style="margin-top: auto;">Đặt hàng ngay</button>
+                </div>
+                <div class="card">
+                    <div class="card-badge">ZOOM <i class="fa-solid fa-video" style="color: #2D8CFF;"></i></div>
+                    <div class="acc-type">Acc cấp</div>
+                    <div class="price-row"><span class="duration">3 Tháng</span><span class="price-tag">599k</span></div>
+                    <div class="price-row"><span class="duration">6 Tháng</span><span class="price-tag">799k</span></div>
+                    <div class="price-row"><span class="duration">12 Tháng</span><span class="price-tag">899k</span></div>
+                    <button class="order-btn" style="margin-top: auto;">Đặt hàng ngay</button>
+                </div>
+                <div class="card">
+                    <div class="card-badge">GEMINI <i class="fa-solid fa-robot" style="color: #106DF0;"></i></div>
+                    <div class="acc-type">Add chính chủ</div>
+                    <div class="price-row"><span class="duration">1 năm (2TB)</span><span class="price-tag">350k</span></div>
+                    <button class="order-btn" style="margin-top: auto;">Đặt hàng ngay</button>
+                </div>
+                <div class="card">
+                    <div class="card-badge">COPILOT <i class="fa-brands fa-microsoft" style="color: #2099EC;"></i></div>
+                    <div class="acc-type">Acc cấp</div>
+                    <div class="price-row"><span class="duration">3 Tháng</span><span class="price-tag">349k</span></div>
+                    <div class="price-row"><span class="duration">6 Tháng</span><span class="price-tag">490k</span></div>
+                    <div class="price-row"><span class="duration">12 Tháng</span><span class="price-tag">799k</span></div>
+                    <button class="order-btn" style="margin-top: auto;">Đặt hàng ngay</button>
+                </div>
+                <div class="card">
+                    <div class="card-badge">MEMRISE <i class="fa-solid fa-brain" style="color: #FFB300;"></i></div>
+                    <div class="acc-type">Add chính chủ</div>
+                    <div class="price-row"><span class="duration">12 Tháng</span><span class="price-tag">499k</span></div>
+                    <div class="price-row"><span class="duration">vĩnh viễn</span><span class="price-tag">1.119k</span></div>
+                    <button class="order-btn" style="margin-top: auto;">Đặt hàng ngay</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="lam-viec" class="tab-content">
+            <div class="grid-container">
+                <div class="card">
+                    <div class="card-badge">ICLOUD <i class="fa-solid fa-cloud" style="color: #55B5E6;"></i></div>
+                    <div class="acc-type">Add Fam 2TB</div>
+                    <div class="price-row"><span class="duration">3 Tháng</span><span class="price-tag">249k</span></div>
+                    <div class="price-row"><span class="duration">6 Tháng</span><span class="price-tag">465k</span></div>
+                    <div class="price-row"><span class="duration">12 Tháng</span><span class="price-tag">619k</span></div>
+                    <button class="order-btn" style="margin-top: auto;">Đặt hàng ngay</button>
+                </div>
+                <div class="card">
+                    <div class="card-badge">OFFICE 365 <i class="fa-brands fa-windows" style="color: #D83B01;"></i></div>
+                    <div class="acc-type">Add chính chủ</div>
+                    <div class="price-row"><span class="duration">6 Tháng</span><span class="price-tag">175k</span></div>
+                    <div class="price-row"><span class="duration">12 Tháng</span><span class="price-tag">250k</span></div>
+                    <button class="order-btn" style="margin-top: auto;">Đặt hàng ngay</button>
+                </div>
+                <div class="card">
+                    <div class="card-badge">CHAT GPT <i class="fa-solid fa-comment-dots" style="color: #10A37F;"></i></div>
+                    <div class="acc-type">Acc cấp</div>
+                    <div class="price-row"><span class="duration">1 Tháng</span><span class="price-tag">299k</span></div>
+                    <div class="price-row"><span class="duration">3 Tháng</span><span class="price-tag">599k</span></div>
+                    <div class="price-row"><span class="duration">6 Tháng</span><span class="price-tag">799k</span></div>
+                    <div class="price-row"><span class="duration">12 Tháng</span><span class="price-tag">899k</span></div>
+                    <button class="order-btn" style="margin-top: auto;">Đặt hàng ngay</button>
+                </div>
+                <div class="card">
+                    <div class="card-badge">GOOGLE DRIVE <i class="fa-brands fa-google-drive" style="color: #1DA462;"></i></div>
+                    <div class="acc-type">Add chính chủ</div>
+                    <div class="price-row"><span class="duration" style="font-size: 1.5rem;">1 năm (2TB)</span><span class="price-tag">459k</span></div>
+                    <div class="price-row"><span class="duration" style="font-size: 1.3rem;">5 tháng + yt pre</span><span class="price-tag">249k</span></div>
+                    <div class="price-row"><span class="duration" style="font-size: 1.3rem;">1 năm + yt pre</span><span class="price-tag">559k</span></div>
+                    <button class="order-btn" style="margin-top: auto;">Đặt hàng ngay</button>
+                </div>
+                <div class="card">
+                    <div class="card-badge">ADOBE (FULL) <i class="fa-solid fa-file-pdf" style="color: #FF0000;"></i></div>
+                    <div class="acc-type">Acc cấp</div>
+                    <div class="price-row"><span class="duration" style="font-size: 1.5rem;">12 T (1 thiết bị)</span><span class="price-tag">999k</span></div>
+                    <div class="price-row"><span class="duration" style="font-size: 1.5rem;">12 T (2 thiết bị)</span><span class="price-tag">1.559k</span></div>
+                    <button class="order-btn" style="margin-top: auto;">Đặt hàng ngay</button>
+                </div>
+                <div class="card">
+                    <div class="card-badge">DISCORD NITRO <i class="fa-brands fa-discord" style="color: #5865F2;"></i></div>
+                    <div class="acc-type">Add chính chủ</div>
+                    <div class="price-row"><span class="duration">12 Tháng</span><span class="price-tag">900k</span></div>
+                    <button class="order-btn" style="margin-top: auto;">Đặt hàng ngay</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="contact-info">
+            <div class="info-badge">Information</div>
+            <div class="contact-line">Phát Lê <i class="fa-brands fa-facebook"></i></div>
+            <div class="contact-line">mice.digital <i class="fa-brands fa-instagram"></i></div>
+            <div class="contact-line">mice.digital <i class="fa-brands fa-tiktok"></i></div>
+            <div class="contact-line">0985891567 <i class="fa-solid fa-phone"></i></div>
+        </div>
+
+    </div> <div id="qr-overlay">
+        <div class="qr-modal">
+            <button class="qr-close" aria-label="Đóng">×</button>
+            <h3>Quét QR để thanh toán</h3>
+            <p id="qr-order-text">Thông tin đơn hàng sẽ hiển thị ở đây.</p>
+            <img id="qr-img" src="" alt="QR thanh toán">
+        </div>
+    </div>
+
+    <script>
+        // --- LOGIC: CHUYỂN CẢNH MÀN HÌNH CHỜ SANG CỬA HÀNG ---
+        const enterBtn = document.getElementById('enter-store-btn');
+        const landingPage = document.getElementById('landing-page');
+        const mainStore = document.getElementById('main-store');
+
+        enterBtn.addEventListener('click', () => {
+            // 1. Ẩn màn hình chờ đi (thêm class hidden để chạy hiệu ứng mờ & zoom)
+            landingPage.classList.add('hidden');
+            
+            // 2. Kích hoạt hiển thị cho phần cửa hàng
+            mainStore.style.display = 'flex';
+            
+            // 3. Đợi một chút (50ms) rồi làm cho cửa hàng rõ dần lên
+            setTimeout(() => {
+                mainStore.classList.add('visible');
+            }, 50);
+        });
+
+        // --- LOGIC: TABS CỬA HÀNG ---
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+                
+                btn.classList.add('active');
+                const targetId = btn.getAttribute('data-tab');
+                document.getElementById(targetId).classList.add('active');
+            });
+        });
+
+        // --- LOGIC: CHỌN GIÁ, TĂNG GIẢM SỐ LƯỢNG & TẠO QR ĐẶT HÀNG ---
+        const cards = document.querySelectorAll('.card');
+        const qrOverlay = document.getElementById('qr-overlay');
+        const qrImg = document.getElementById('qr-img');
+        const qrOrderText = document.getElementById('qr-order-text');
+        const qrClose = document.querySelector('.qr-close');
+
+        qrClose.addEventListener('click', () => qrOverlay.classList.remove('active'));
+        qrOverlay.addEventListener('click', (event) => {
+            if (event.target === qrOverlay) qrOverlay.classList.remove('active');
+        });
+
+        cards.forEach(card => {
+            const parsePrice = priceText => {
+                const normalized = priceText.toLowerCase().replace(/\s/g, '').replace(/\./g, '');
+                if (normalized.endsWith('k')) {
+                    const value = parseFloat(normalized.slice(0, -1));
+                    return Math.round(value * 1000);
+                }
+                const value = parseFloat(normalized.replace(/[^0-9\.]/g, ''));
+                return isNaN(value) ? 0 : value;
+            };
+            const formatPrice = amount => {
+                if (amount >= 1000) {
+                    return (amount / 1000).toLocaleString('vi-VN') + 'k';
+                }
+                return amount.toString();
+            };
+            const quantityControl = document.createElement('div');
+            quantityControl.className = 'quantity-control';
+
+            const decreaseBtn = document.createElement('button');
+            decreaseBtn.className = 'qty-btn decrease';
+            decreaseBtn.type = 'button';
+            decreaseBtn.textContent = '-';
+
+            const qtyValue = document.createElement('span');
+            qtyValue.className = 'qty-value';
+            qtyValue.textContent = '1';
+
+            const increaseBtn = document.createElement('button');
+            increaseBtn.className = 'qty-btn increase';
+            increaseBtn.type = 'button';
+            increaseBtn.textContent = '+';
+
+            quantityControl.append(decreaseBtn, qtyValue, increaseBtn);
+            card.insertBefore(quantityControl, card.querySelector('.order-btn'));
+
+            let orderQuantity = 1;
+            decreaseBtn.addEventListener('click', () => {
+                if (orderQuantity > 1) {
+                    orderQuantity -= 1;
+                    qtyValue.textContent = orderQuantity;
+                }
+            });
+            increaseBtn.addEventListener('click', () => {
+                orderQuantity += 1;
+                qtyValue.textContent = orderQuantity;
+            });
+            const priceRows = card.querySelectorAll('.price-row');
+            const orderBtn = card.querySelector('.order-btn');
+            const serviceName = card.querySelector('.card-badge').textContent.trim();
+            
+            let selectedPackage = null;
+            let selectedPrice = null;
+
+            priceRows.forEach(row => {
+                row.addEventListener('click', function() {
+                    if (this.classList.contains('active')) {
+                        this.classList.remove('active');
+                        selectedPackage = null;
+                        selectedPrice = null;
+                    } else {
+                        priceRows.forEach(r => r.classList.remove('active'));
+                        this.classList.add('active');
+                        selectedPackage = this.querySelector('.duration').textContent.trim();
+                        selectedPrice = this.querySelector('.price-tag').textContent.trim();
+                    }
+                });
+            });
+
+            orderBtn.addEventListener('click', function() {
+                if (selectedPackage === null) {
+                    alert('Bạn chưa chọn thời hạn gói cước cho dịch vụ ' + serviceName + '. Vui lòng click chọn một mức giá trước nhé!');
+                } else {
+                    const unitAmount = parsePrice(selectedPrice);
+                    const totalAmount = formatPrice(unitAmount * orderQuantity);
+                    const orderInfo = `Dịch vụ: ${serviceName}\nThời hạn: ${selectedPackage}\nSố lượng: ${orderQuantity}\nTổng thanh toán: ${totalAmount}`;
+                    const qrText = `Thanh toán ${totalAmount} cho ${serviceName} (${selectedPackage}) x${orderQuantity}`;
+                    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=${encodeURIComponent(qrText)}`;
+                    qrOrderText.textContent = orderInfo.replace(/\n/g, ' · ');
+                    qrOverlay.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
